@@ -25,7 +25,7 @@ dist
 
 # Dependency directories
 node_modules/
-
+dev/
 # TypeScript cache
 *.tsbuildinfo
 
