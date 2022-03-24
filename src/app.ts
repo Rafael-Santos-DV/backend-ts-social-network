@@ -2,14 +2,18 @@ import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import mongoose from "mongoose";
-import path from "path";
+// import path from "path";
 import crypto from "crypto";
 
 import dbRoom from "./Schema/schemalRoom";
+import dbUsers from "./Schema/schemaUsers";
+
+import routes from "./routes/routes";
 
 type ArgsData = {
   userId?: string;
   userOne: string;
+  srcOne?: string;
   userTwo: string;
 };
 
@@ -28,7 +32,9 @@ interface TypeArray {
 interface TypesSchema {
   roomName: string;
   userOne: string;
+  srcOne: string;
   userTwo: string;
+  srcTwo: string;
   talks?: TypeArray[];
 }
 
@@ -43,7 +49,10 @@ interface TypeEventsEmit {
 }
 
 const app = express();
-app.use(express.static(path.resolve(__dirname, "dev")));
+app.use(express.json());
+// app.use(express.static(path.resolve(__dirname, "dev")));
+app.use(routes);
+
 const httpServer = createServer(app);
 
 const io = new Server<TypeEventsEmit>(httpServer, {
@@ -78,12 +87,15 @@ io.on("connection", async (socket) => {
       });
 
       const formatNameRoom = String(hash.toString("hex")) + data.userOne + data.userTwo;
+      const srcTwo = await dbUsers.findOne({ ["_id"]: data.userTwo });
 
       if (!verifyExists.length) {
         await dbRoom.create({
           roomName: formatNameRoom,
           userOne: data.userOne,
+          srcOne: data.srcOne || "",
           userTwo: data.userTwo,
+          srcTwo: srcTwo.src || "",
         } as TypesSchema);
 
         const initialTalksUser = await dbRoom.find({ $or: [{ userOne: data.userId }, { userTwo: data.userId }] });
@@ -128,4 +140,4 @@ io.on("connection", async (socket) => {
   });
 });
 
-httpServer.listen(3001, () => console.log("tudo ok"));
+httpServer.listen(3002, () => console.log("connected"));
