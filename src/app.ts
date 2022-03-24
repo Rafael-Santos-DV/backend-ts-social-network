@@ -1,14 +1,17 @@
+import { config } from "dotenv";
 import express from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import mongoose from "mongoose";
 // import path from "path";
 import crypto from "crypto";
+import cors from "cors";
 
 import dbRoom from "./Schema/schemalRoom";
 import dbUsers from "./Schema/schemaUsers";
 
 import routes from "./routes/routes";
+import corsOptions from "./middlewares/cors";
 
 type ArgsData = {
   userId?: string;
@@ -48,7 +51,13 @@ interface TypeEventsEmit {
   refreshAll: (id: string) => void;
 }
 
+
+// inicializações
+
+config();
 const app = express();
+app.use(cors(corsOptions));
+
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, "dev")));
 app.use(routes);
@@ -57,12 +66,12 @@ const httpServer = createServer(app);
 
 const io = new Server<TypeEventsEmit>(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.URL_CORS_ORIGIN,
     credentials: true,
   },
 });
 
-mongoose.connect("mongodb://localhost:27017/chatMe", (error) => {
+mongoose.connect(String(process.env.URL_MONGODB), (error) => {
   if (error) new Error("erro ao conectar!");
   console.log("conexão feita com sucesso!");
 });
