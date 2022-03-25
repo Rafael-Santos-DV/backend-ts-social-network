@@ -67,7 +67,7 @@ const httpServer = createServer(app);
 
 const io = new Server<TypeEventsEmit>(httpServer, {
   cors: {
-    origin: process.env.URL_CORS_ORIGIN,
+    origin: "https://chatmenetwork.netlify.app",
     credentials: true,
   },
 });
@@ -152,5 +152,4 @@ io.on("connection", async (socket) => {
   });
 });
 
-app.listen(process.env.PORT || 3001, () => console.log("connected"));
 httpServer.listen(process.env.PORT || 3002);
