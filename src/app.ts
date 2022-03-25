@@ -152,5 +152,5 @@ io.on("connection", async (socket) => {
   });
 });
 
-app.listen(3001, () => console.log("connected"));
-httpServer.listen(3002);
+app.listen(process.env.PORT || 3001, () => console.log("connected"));
+httpServer.listen(process.env.PORT || 3002);
