@@ -56,7 +56,7 @@ interface TypeEventsEmit {
 
 config();
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors(/* corsOptions */));
 
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, "dev")));
@@ -149,4 +149,4 @@ io.on("connection", async (socket) => {
   });
 });
 
-httpServer.listen(3002, () => console.log("connected"));
+httpServer.listen(process.env.PORT || 3002, () => console.log("connected"));
