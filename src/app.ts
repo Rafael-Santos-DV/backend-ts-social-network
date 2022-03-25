@@ -15,6 +15,7 @@ import corsOptions from "./middlewares/cors";
 
 type ArgsData = {
   userId?: string;
+  userName: string;
   userOne: string;
   srcOne?: string;
   userTwo: string;
@@ -96,15 +97,17 @@ io.on("connection", async (socket) => {
       });
 
       const formatNameRoom = String(hash.toString("hex")) + data.userOne + data.userTwo;
-      const srcTwo = await dbUsers.findOne({ ["_id"]: data.userTwo });
+      const dbTwo = await dbUsers.findOne({ ["_id"]: data.userTwo });
 
       if (!verifyExists.length) {
         await dbRoom.create({
           roomName: formatNameRoom,
           userOne: data.userOne,
+          userOneName: data.userName,
+          userTwoName: dbTwo.userName,
           srcOne: data.srcOne || "",
           userTwo: data.userTwo,
-          srcTwo: srcTwo.src || "",
+          srcTwo: dbTwo.src || "",
         } as TypesSchema);
 
         const initialTalksUser = await dbRoom.find({ $or: [{ userOne: data.userId }, { userTwo: data.userId }] });
@@ -149,4 +152,5 @@ io.on("connection", async (socket) => {
   });
 });
 
-httpServer.listen(process.env.PORT || 3002, () => console.log("connected"));
+app.listen(3001, () => console.log("connected"));
+httpServer.listen(3002);

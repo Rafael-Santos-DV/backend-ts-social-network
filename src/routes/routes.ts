@@ -7,7 +7,6 @@ const CLIENT_ID = process.env.ID_CLOUD;
 
 routes.post("/EmitUser", async (req, res) => {
   const { token } = req.body;
-
   const client = new OAuth2Client(CLIENT_ID);
 
   async function verify() {
@@ -27,6 +26,7 @@ routes.post("/EmitUser", async (req, res) => {
 
     if (payload) {
       const result = await dbUsers.create(jsonCreate);
+      console.log(result);
       return result;
     };
 

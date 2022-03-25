@@ -5,6 +5,8 @@ const RoomSchema = new Schema({
   roomName: String,
   userOne: String,
   srcOne: String,
+  userOneName: String,
+  userTwoName: String,
   userTwo: String,
   srcTwo: String,
   talks: [],
