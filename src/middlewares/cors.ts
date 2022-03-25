@@ -1,4 +1,4 @@
-const whitelist = [String(process.env.URL_CORS_ORIGIN)];
+const whitelist = ["https://chatmenetwork.netlify.app"];
 
 
 const corsOptions = {
