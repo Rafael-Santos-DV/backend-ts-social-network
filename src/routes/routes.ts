@@ -59,7 +59,7 @@ routes.post("/verify", async (req, res) => {
   const dataVerify = await dbUsers.findOne({ email: email });
 
   if (dataVerify) {
-    return res.json({ authorization: true, ...dataVerify, hashSocket: process.env.HASH_SOCKETS });
+    return res.json({ authorization: true, hashSocket: process.env.HASH_SOCKETS });
   }
   return res.json({ authorization: false });
 
