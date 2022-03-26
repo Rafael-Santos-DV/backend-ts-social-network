@@ -1,4 +1,4 @@
-const whitelist = ["https://chatmenetwork.netlify.app"];
+const whitelist = ["https://chatmenetwork.netlify.app", "https://www.chatmenetwork.netlify.app"];
 
 
 const corsOptions = {
