@@ -19,12 +19,14 @@ type ArgsData = {
   userOne: string;
   srcOne?: string;
   userTwo: string;
+  hashSocket: string;
 };
 
 type ArgsMessage = {
   message: string;
   room: string;
   userId: string;
+  hashSocket: string;
 };
 
 interface TypeArray {
@@ -44,11 +46,11 @@ interface TypesSchema {
 
 interface TypeEventsEmit {
   onCreateRoom: (data: ArgsData) => void;
-  init: (data: { userId: string }) => void;
+  init: (data: { userId: string, hashSocket: string }) => void;
   onMessageEmit: (data: ArgsMessage) => void;
   allTalks: (data: unknown[]) => void;
   messages_one: (data: unknown) => void;
-  getMessagesRoom: (room: string) => void;
+  getMessagesRoom: (room: string, hashSocket: string) => void;
   refreshAll: (id: string) => void;
 }
 
@@ -79,12 +81,16 @@ mongoose.connect(String(process.env.URL_MONGODB), (error) => {
 
 io.on("connection", async (socket) => {
   socket.on("init", async (data) => {
+    if (data.hashSocket !== process.env.HASH_SOCKETS) return;
+
     const initialTalksUser = await dbRoom.find({ $or: [{ userOne: data.userId }, { userTwo: data.userId }] });
 
     socket.emit("allTalks", initialTalksUser);
   });
 
   socket.on("onCreateRoom", async (data) => {
+    if (data.hashSocket !== process.env.HASH_SOCKETS) return;
+
     // create hash for room dynamic
     crypto.randomBytes(10, async (err, hash) => {
       if (err) return;
@@ -121,7 +127,9 @@ io.on("connection", async (socket) => {
   });
 
   // adiciona o user em uma room e envia as mensagens recentes
-  socket.on("getMessagesRoom", async (room) => {
+  socket.on("getMessagesRoom", async (room, hashSocket) => {
+    if (hashSocket !== process.env.HASH_SOCKETS) return;
+
     const messagesRoom = await dbRoom.findOne({ roomName: room });
     socket.join(room);
 
@@ -130,6 +138,9 @@ io.on("connection", async (socket) => {
 
   // recebe novas mensagens e retorna novamente
   socket.on("onMessageEmit", async (data) => {
+
+    if (data.hashSocket !== process.env.HASH_SOCKETS) return;
+
     const initialTalksUser = await dbRoom.findOne({ roomName: data.room });
     socket.join(String(data.room));
 

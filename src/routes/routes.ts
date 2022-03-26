@@ -54,5 +54,16 @@ routes.post("/EmitUser", async (req, res) => {
 
 });
 
+routes.post("/verify", async (req, res) => {
+  const { email } = req.body;
+  const dataVerify = await dbUsers.findOne({ email: email });
+
+  if (!dataVerify) {
+    return res.json({ authorization: false });
+  }
+
+  return res.json({ authorization: true, ...dataVerify });
+
+})
 
 export default routes;
