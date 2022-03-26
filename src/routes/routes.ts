@@ -58,11 +58,10 @@ routes.post("/verify", async (req, res) => {
   const { email } = req.body;
   const dataVerify = await dbUsers.findOne({ email: email });
 
-  if (!dataVerify) {
-    return res.json({ authorization: false });
+  if (dataVerify) {
+    return res.json({ authorization: true, ...dataVerify });
   }
-
-  return res.json({ authorization: true, ...dataVerify });
+  return res.json({ authorization: false });
 
 })
 
