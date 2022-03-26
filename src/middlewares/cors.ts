@@ -1,5 +1,4 @@
-const whitelist = ["https://chatmenetwork.netlify.app", "https://www.chatmenetwork.netlify.app", "chatmenetwork.netlify.app"];
-
+const whitelist = [process.env.URL_ROUTE1, process.env.URL_ROUTE2, process.env.URL_ROUTE3];
 
 const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, origin?: boolean | undefined) => void) {

@@ -57,7 +57,7 @@ interface TypeEventsEmit {
 
 config();
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(express.json());
 // app.use(express.static(path.resolve(__dirname, "dev")));
@@ -67,7 +67,7 @@ const httpServer = createServer(app);
 
 const io = new Server<TypeEventsEmit>(httpServer, {
   cors: {
-    origin: ["https://chatmenetwork.netlify.app", "https://www.chatmenetwork.netlify.app"],
+    origin: process.env.ORIGIN_SOCKET,
     credentials: true,
   },
 });
