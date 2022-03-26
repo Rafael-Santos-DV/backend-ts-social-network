@@ -22,12 +22,22 @@ routes.post("/EmitUser", async (req, res) => {
     const jsonCreate = {
       userName: payload?.given_name,
       src: payload?.picture,
+      email: payload?.email,
     }
 
     if (payload) {
-      const result = await dbUsers.create(jsonCreate);
-      console.log(result);
-      return result;
+      const verifyUser = await dbUsers.findOne({ email: jsonCreate.email });
+
+      if (verifyUser) {
+        return verifyUser;
+
+      } else {
+
+        const result = await dbUsers.create(jsonCreate);
+        return result;
+
+      }
+
     };
 
     // If request specified a G Suite domain:
